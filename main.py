@@ -478,7 +478,7 @@ fig.update_traces(textposition='outside')
 fig.update_layout(xaxis_title="Dlv Region", yaxis_title="Composite Consistency Score", coloraxis_showscale=False)
 st.plotly_chart(fig, use_container_width=True)
 
-st.dataframe(agg)
+#st.dataframe(agg)
 
 data['Future__gt_7_days'] =  data['Future__gt_7_days'].astype(float)
 
@@ -532,14 +532,17 @@ region_avg["Target_Critical_Ratio"] = region_avg["Target_Critical_Pending"] / (
 # Merge agg with latest targets
 final = agg.merge(region_avg, on="Dlv_Region", how="left")
 
+st.divider()
+st.header("📈 5. Categorization of Regions Based on Performance & Consistency")
+
 # Categorization
 q25 = agg["Avg_Critical_Ratio"].quantile(0.25)
 def categorize(row):
     if pd.isna(row["Avg_Critical_Ratio"]):
         return "NoData"
-    if row["Avg_Critical_Ratio"] < q25 and row["Composite_Consistency"] > 0.8:
+    if row["Avg_Critical_Ratio"] < q25 and row["Composite_Consistency"] > 0.7:
         return "A: Stable Performer"
-    elif row["Composite_Consistency"] > 0.7:
+    elif row["Composite_Consistency"] > 0.6:
         return "B: Improving"
     elif row["Avg_Critical_Ratio"] < q25:
         return "C: Volatile"
@@ -547,6 +550,58 @@ def categorize(row):
         return "D: Underperformer"
 
 final["Category"] = final.apply(categorize, axis=1)
+
+st.markdown(f"""
+**Categorization Logic**
+
+| Category | Criteria | Description |
+|-----------|-----------|-------------|
+| **A: Stable Performer** | `Avg_Critical_Ratio < {q25:.3f}` & `Composite_Consistency > 0.7` | Excellent and consistent |
+| **B: Improving** | `Composite_Consistency > 0.6` | Showing improvement trend |
+| **C: Volatile** | `Avg_Critical_Ratio < {q25:.3f}` | Strong but unstable |
+| **D: Underperformer** | Otherwise | Needs improvement |
+""")
+
+# --- Color mapping ---
+color_map = {
+    "A: Stable Performer": "#2ecc71",   # green
+    "B: Improving": "#f1c40f",          # yellow
+    "C: Volatile": "#e67e22",           # orange
+    "D: Underperformer": "#e74c3c",     # red
+    "NoData": "#95a5a6"                 # gray
+}
+
+# --- Scatter Plot (Quadrant Visualization) ---
+fig = px.scatter(
+    final,
+    x="Avg_Critical_Ratio",
+    y="Composite_Consistency",
+    color="Category",
+    text="Dlv_Region",
+    color_discrete_map=color_map,
+    size_max=12,
+    title="🧭 Region Performance Matrix: Avg Critical Ratio vs Consistency",
+)
+
+# Add quadrant reference lines
+fig.add_vline(x=q25, line_dash="dash", line_color="gray")
+fig.add_hline(y=0.7, line_dash="dot", line_color="gray")
+fig.add_hline(y=0.6, line_dash="dot", line_color="gray")
+
+fig.update_traces(textposition="top center")
+fig.update_layout(
+    xaxis_title="Avg Critical Ratio (Lower = Better)",
+    yaxis_title="Composite Consistency (Higher = Better)",
+    legend_title_text="Category",
+    template="plotly_white",
+)
+
+st.plotly_chart(fig, use_container_width=True)
+
+# --- Optional: Summary table ---
+st.subheader("📋 Summary by Category")
+summary = final.groupby("Category")["Dlv_Region"].count().reset_index().rename(columns={"Dlv_Region": "Count"})
+st.dataframe(summary, hide_index=True, use_container_width=True)
 
 st.dataframe(final)
 
