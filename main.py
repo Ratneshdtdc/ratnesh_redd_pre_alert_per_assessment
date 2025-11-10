@@ -706,7 +706,7 @@ final = agg.merge(region_avg, on="Dlv_Region", how="left")
 
 col1, col2 = st.columns(2)
 col1.metric("Current REDD Today or earlier Ratio", int(final['Critical_Pending'].sum()),str(round(((final['Critical_Pending'].sum()/final['Target_Critical_Pending'].sum())-1)*100,2))+"%" )
-col2.metric("Targeted REDD Today or earlier Ratio", int(final['Target_Critical_Pending'].sum()), "-")
+col2.metric("Targeted REDD Today or earlier Ratio", int(final['Target_Critical_Pending'].sum()))
 
 
 st.dataframe(final)
