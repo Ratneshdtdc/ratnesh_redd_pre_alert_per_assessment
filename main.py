@@ -632,17 +632,17 @@ fig = px.scatter(
     text="Dlv_Region",
     color_discrete_map=color_map,
     size_max=12,
-    title="🧭 Region Performance Matrix: Avg Critical Ratio vs Consistency",
+    title="🧭 Region Performance Matrix: Avg REDD today or before pendency Ratio vs Consistency",
 )
 
 # Add quadrant reference lines
 fig.add_vline(x=q25, line_dash="dash", line_color="gray")
 fig.add_hline(y=0.7, line_dash="dot", line_color="gray")
-fig.add_hline(y=0.6, line_dash="dot", line_color="gray")
+#fig.add_hline(y=0.6, line_dash="dot", line_color="gray")
 
 fig.update_traces(textposition="top center")
 fig.update_layout(
-    xaxis_title="Avg Critical Ratio (Lower = Better)",
+    xaxis_title="Avg REDD Today or before/Total Pendency Ratio (Lower = Better)",
     yaxis_title="Composite Consistency (Higher = Better)",
     legend_title_text="Category",
     template="plotly_white",
@@ -654,6 +654,11 @@ st.plotly_chart(fig, use_container_width=True)
 st.subheader("📋 Summary by Category")
 summary = final.groupby("Category")["Dlv_Region"].count().reset_index().rename(columns={"Dlv_Region": "Count"})
 st.dataframe(summary, hide_index=True, use_container_width=True)
+
+st.divider()
+st.header("📈 6. Targets")
+
+
 
 st.dataframe(final)
 
