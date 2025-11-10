@@ -275,8 +275,8 @@ col1, col2 = st.columns(2)
 selected_region = col2.selectbox("Select Region", regions)
 
 filtered_df = data.copy()
-if selected_zone != "All":
-    filtered_df = filtered_df[filtered_df["Dlv_Zone"] == selected_zone]
+# if selected_zone != "All":
+#     filtered_df = filtered_df[filtered_df["Dlv_Zone"] == selected_zone]
 if selected_region != "All":
     filtered_df = filtered_df[filtered_df["Dlv_Region"] == selected_region]
 
