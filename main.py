@@ -227,7 +227,9 @@ data = raw.copy()
 
 st.title("Reached at Dest REDD Based Open Volume | Analysis & Targets")
 st.divider()
+st.header("1. Pending Volume Analysis")
 
+st.write("Consists Data from 1st Nov to 10th Nov (Except 4th Nov).")
 # Define pending bands
 data["Critical_Pending"] = data["Older_than_7_days"] + data["Last_7_days"] + data["REDD_Today"]
 data["Upcoming_Pending"] = data["Next_7_days"] + data["Future_>7_days"]
@@ -245,6 +247,11 @@ else:
     rank_group = "Date"
 
 data["Daily_Rank"] = data.groupby(rank_group)["Critical_Ratio"].rank(method="dense", ascending=True)
+
+st.write("Regions Ranks:")
+st.dataframe(
+    data
+)
 
 # Aggregate region metrics (stats across provided sheets)
 agg = data.groupby("Dlv_Region").agg(
