@@ -747,7 +747,7 @@ output["Avg_Critical_Ratio (%)"] = output["Avg_Critical_Ratio"] * 100
 output["Target_Critical_Ratio (%)"] = output["Target_Critical_Ratio"] * 100
 
 # Display DataFrame formatted
-st.markdown("### 📊 Critical Ratio Reduction Summary")
+#st.markdown("### 📊 Critical Ratio Reduction Summary")
 output = output.rename(columns={
     "Avg_Critical_Ratio": "Current REDD today and before Contribution",
     "Target_Critical_Ratio": "Targeted REDD today and before Contribution"
@@ -762,7 +762,7 @@ output["Targeted REDD today and before Contribution (%)"] = (
 )
 
 # Display formatted dataframe
-st.markdown("### 📊 REDD Contribution Summary by Region")
+st.markdown("### 📊 REDD today or before Contribution Reduction Targets by Region")
 st.dataframe(
     output[[
         "Dlv_Region",
