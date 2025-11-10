@@ -362,7 +362,7 @@ agg = data.groupby("Dlv_Region").agg(
 st.divider()
 st.header("📊 3. Final Standings of Regions")
 
-st.Dataframe(agg)
+st.dataframe(agg)
 
 agg["Stat_Consistency"] = 1 - (agg["Std_Critical_Ratio"] / agg["Mean_Critical_Cratio"] ) if "Mean_Critical_Cratio" in agg.columns else 1 - (agg["Std_Critical_Ratio"] / agg["Mean_Critical_Ratio"])
 
