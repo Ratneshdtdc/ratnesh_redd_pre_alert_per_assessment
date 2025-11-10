@@ -689,7 +689,7 @@ st.markdown("### ⚙️ Configure Reduction Factors")
 # Initial defaults
 st.write("### ⚙️ Set Reduction Factor as per Region Performance")
 
-default_map = {"Top": 0.95, "Average": 0.90, "Poor": 0.95}
+default_map = {"Top": 0.92, "Average": 0.89, "Poor": 0.89}
 reduction_map = {}
 
 # Create 3 columns horizontally
