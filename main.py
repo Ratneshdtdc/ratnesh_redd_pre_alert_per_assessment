@@ -264,7 +264,7 @@ data["Daily_Rank"] = data.groupby(rank_group)["Critical_Ratio"].rank(method="den
 #)
 
 data['Date'] = pd.to_datetime(
-    '2025-' + "11" + '-' + data['_DateProxy'].str[1:2],
+    '2025-' + "11" + '-' + data['_DateProxy'].str[1:3],
     errors='coerce'
 )
 # --- Streamlit layout ---
