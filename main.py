@@ -551,29 +551,45 @@ q25 = agg["Avg_Critical_Ratio"].quantile(0.25)
 # # Calculate 25th percentile of Avg_Critical_Ratio
 # q25 = agg["Avg_Critical_Ratio"].quantile(0.25)
 
-def categorize(row):
-    ratio = row["Avg_Critical_Ratio"]
-    consistency = row["Composite_Consistency"]
+# thresholds (tweakable)
+q25 = final["Avg_Critical_Ratio"].quantile(0.25)  # performance threshold (lower = better)
+cons_high = 0.70   # high consistency
+cons_low  = 0.60   # medium consistency cutoff
 
-    # Handle missing data
+def categorize(row, q25=q25, cons_high=cons_high, cons_low=cons_low):
+    """
+    Quadrant-based categorization using BOTH Avg_Critical_Ratio and Composite_Consistency.
+
+    - Avg_Critical_Ratio: lower is better (use q25 as "good" cutoff)
+    - Composite_Consistency: higher is better
+
+    Quadrants:
+      A: Low ratio (good) & high consistency  -> "A: Stable Performer"
+      B: Low ratio (good) & low/medium consistency -> "B: Good but Unstable"
+      C: High ratio (poor) & high consistency -> "C: Consistent but Poor"
+      D: High ratio (poor) & low/medium consistency -> "D: Underperformer"
+    """
+    ratio = row.get("Avg_Critical_Ratio", None)
+    consistency = row.get("Composite_Consistency", None)
+
     if pd.isna(ratio) or pd.isna(consistency):
         return "NoData"
 
-    # A: Low ratio (good) + high consistency (very reliable)
-    if ratio < q25 and consistency >= 0.7:
+    low_ratio = ratio < q25
+    high_cons = consistency >= cons_high
+    med_cons = (consistency >= cons_low) and (consistency < cons_high)
+    low_cons = consistency < cons_low
+
+    # Quadrant logic (explicit, non-overlapping)
+    if low_ratio and high_cons:
         return "A: Stable Performer"
-
-    # B: Decent consistency (improving), even if ratio not the lowest
-    elif consistency >= 0.65:
-        return "B: Improving"
-
-    # C: Low ratio but poor consistency (unstable performer)
-    elif ratio < q25 and consistency < 0.6:
-        return "C: Volatile"
-
-    # D: Weak both in ratio and consistency
-    else:
+    elif low_ratio and (med_cons or low_cons):
+        return "B: Good but Unstable"
+    elif (not low_ratio) and high_cons:
+        return "C: Consistent but Poor"
+    else:  # (not low_ratio) and (med_cons or low_cons)
         return "D: Underperformer"
+
 
 # Apply categorization
 final["Category"] = final.apply(categorize, axis=1)
