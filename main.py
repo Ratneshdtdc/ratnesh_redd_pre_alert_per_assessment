@@ -593,13 +593,7 @@ def categorize(row, q25=q25, cons_high=cons_high, cons_low=cons_low):
 
 # Apply categorization
 final["Category"] = final.apply(categorize, axis=1)
-"""
-Quadrants:
-      A: Low ratio (good) & high consistency  -> "A: Stable Performer"
-      B: Low ratio (good) & low/medium consistency -> "B: Good but Unstable"
-      C: High ratio (poor) & high consistency -> "C: Consistent but Poor"
-      D: High ratio (poor) & low/medium consistency -> "D: Underperformer"
-    """
+
 
 
 st.markdown(f"""
@@ -658,7 +652,55 @@ st.dataframe(summary, hide_index=True, use_container_width=True)
 st.divider()
 st.header("📈 6. Targets")
 
+region_avg = (
+    data.groupby("Dlv_Region", as_index=False)
+    .agg({
+        "Older_than_7_days": "mean",
+        "Last_7_days": "mean",
+        "REDD_Today": "mean",
+        "Next_7_days": "mean",
+        "Future__gt_7_days": "mean",
+        "Critical_Pending": "mean",
+        "Upcoming_Pending": "mean",
+        "Total_Pending": "mean",
+        "Critical_Ratio": "mean"
+    })
+)
 
+mean_ratio = region_avg["Critical_Ratio"].mean()
+std_ratio = region_avg["Critical_Ratio"].std()
+
+def assign_tier(x):
+    if x < mean_ratio - 0.5 * std_ratio:
+        return "Top"
+    elif x > mean_ratio + 0.5 * std_ratio:
+        return "Poor"
+    else:
+        return "Average"
+
+
+region_avg["Performance_Tier"] = region_avg["Critical_Ratio"].apply(assign_tier)
+
+# --- Step 3: Assign dynamic reduction rates ---
+reduction_map = {"Top": 0.95, "Average": 0.90, "Poor": 0.95}
+region_avg["Reduction_Factor"] = region_avg["Performance_Tier"].map(reduction_map)
+
+region_avg["Target_Older_than_7_days"] = region_avg["Older_than_7_days"] * region_avg["Reduction_Factor"]
+region_avg["Target_Last_7_days"] = region_avg["Last_7_days"] * region_avg["Reduction_Factor"]
+region_avg["Target_REDD_Today"] = region_avg["REDD_Today"] * region_avg["Reduction_Factor"]
+
+region_avg["Target_Critical_Pending"] = (
+    region_avg["Target_Older_than_7_days"] +
+    region_avg["Target_Last_7_days"] +
+    region_avg["Target_REDD_Today"]
+)
+
+region_avg["Target_Critical_Ratio"] = region_avg["Target_Critical_Pending"] / (
+    region_avg["Target_Critical_Pending"] + region_avg["Upcoming_Pending"]
+).replace(0, np.nan)
+
+# Merge agg with latest targets
+final = agg.merge(region_avg, on="Dlv_Region", how="left")
 
 st.dataframe(final)
 
