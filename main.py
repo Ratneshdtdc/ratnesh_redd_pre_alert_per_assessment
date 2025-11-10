@@ -687,25 +687,30 @@ import streamlit as st
 st.markdown("### ⚙️ Configure Reduction Factors")
 
 # Initial defaults
-st.write("Set reduction Factor as per performance of regions.")
+st.write("### ⚙️ Set Reduction Factor as per Region Performance")
+
 default_map = {"Top": 0.95, "Average": 0.90, "Poor": 0.95}
 reduction_map = {}
 
-# Loop through keys and create interactive number inputs
-for key, val in default_map.items():
-    pct = (1 - val) * 100  # convert to %
-    new_pct = st.slider(
-        f"{key} Performance Reduction (%)", 
-        min_value=0, 
-        max_value=20, 
-        value=int(pct), 
-        step=1
-    )
-    reduction_map[key] = 1 - new_pct / 100
+# Create 3 columns horizontally
+cols = st.columns(len(default_map))
 
-st.divider()
-st.write("### Final Reduction Multipliers:")
-st.json(reduction_map)
+for (key, val), col in zip(default_map.items(), cols):
+    with col:
+        pct = (1 - val) * 100  # convert to %
+        new_pct = st.slider(
+            f"{key}",
+            min_value=0,
+            max_value=20,
+            value=int(pct),
+            step=1,
+            format="%d%%"
+        )
+        reduction_map[key] = 1 - new_pct / 100
+
+#st.divider()
+#st.write("### Final Reduction Multipliers:")
+#st.json(reduction_map)
 
 
 reduction_map = {"Top": 0.95, "Average": 0.90, "Poor": 0.95}
