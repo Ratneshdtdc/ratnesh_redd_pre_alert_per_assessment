@@ -437,7 +437,7 @@ agg = agg.merge(dir_cons, on="Dlv_Region", how="left")
 # Composite consistency (weights)
 agg["Composite_Consistency"] = 0.6 * agg["Stat_Consistency"].fillna(0) + 0.4 * agg["Dir_Consistency"].fillna(0)
 
-gg["Rank"] = agg["Composite_Consistency"].rank(ascending=False, method='dense').astype(int)
+agg["Rank"] = agg["Composite_Consistency"].rank(ascending=False, method='dense').astype(int)
 agg = agg.sort_values("Composite_Consistency", ascending=False)
 
 # --- Streamlit layout ---
