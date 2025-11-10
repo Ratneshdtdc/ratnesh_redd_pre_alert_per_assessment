@@ -323,12 +323,12 @@ st.divider()
 st.header("📊 2. Ranks of Regions")
 
 # --- Optional zone filter ---
-zones = ["All"] + sorted(data["Dlv_Region"].dropna().unique().tolist())
-selected_zone = st.selectbox("Select Region", zones)
+# zones = ["All"] + sorted(data["Dlv_Region"].dropna().unique().tolist())
+# selected_zone = st.selectbox("Select Region", zones)
 
-filtered_df = data.copy()
-if selected_zone != "All":
-   filtered_df = filtered_df[filtered_df["Dlv_Region"] == selected_zone]
+# filtered_df = data.copy()
+# if selected_zone != "All":
+#    filtered_df = filtered_df[filtered_df["Dlv_Region"] == selected_zone]
     
 # --- Plot line chart for daily ranks ---
 fig = px.line(
