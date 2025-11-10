@@ -225,10 +225,10 @@ data = raw.copy()
 
 # data.to_csv("data_temp.csv")
 
-
+st.set_page_config(layout="wide")
 st.title("Reached at Dest REDD Based Open Volume | Analysis & Targets")
 st.divider()
-st.header("1. Pending Volume Analysis")
+st.header("📊 1. Pending Volume Analysis")
 
 st.write("Consists Data from 1st Nov to 10th Nov (Except 4th Nov).")
 # Define pending bands
@@ -257,13 +257,19 @@ data["Daily_Rank"] = data.groupby(rank_group)["Critical_Ratio"].rank(method="den
 # Ensure Date column is properly parsed
 #data['Date'] = data['SheetName'].str.extract(r'A0*(\d{2})(\d{2})')[0] + '-' + data['SheetName'].str.extract(r'A0*(\d{2})(\d{2})')[1]
 #data['Date'] = pd.to_datetime('2025-' + data['SheetName'].str[3:5] + '-' + data['SheetName'].str[5:7], errors='coerce')
+A0111
+#data['Date'] = pd.to_datetime(
+#    '2025-' + data['_DateProxy'].str[-2:] + '-' + data['_DateProxy'].str[2:4],
+#    errors='coerce'
+#)
+
 data['Date'] = pd.to_datetime(
-    '2025-' + data['_DateProxy'].str[-2:] + '-' + data['_DateProxy'].str[2:4],
+    '2025-' + "11" + '-' + data['_DateProxy'].str[1:2],
     errors='coerce'
 )
 # --- Streamlit layout ---
 st.set_page_config(layout="wide")
-st.title("📊 Critical Pending & Ratio Trend Dashboard")
+#st.title("📊 Critical Pending & Ratio Trend Dashboard")
 
 # --- Filters ---
 #zones = ["All"] + sorted(data["Dlv_Zone"].dropna().unique().tolist())
