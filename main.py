@@ -684,8 +684,6 @@ region_avg["Performance_Tier"] = region_avg["Critical_Ratio"].apply(assign_tier)
 # --- Step 3: Assign dynamic reduction rates ---
 import streamlit as st
 
-st.markdown("### ⚙️ Configure Reduction Factors")
-
 # Initial defaults
 st.write("### ⚙️ Set Reduction Factor as per Region Performance")
 
@@ -749,6 +747,7 @@ out_cols = [
 # ensure columns exist
 out_cols = [c for c in out_cols if c in final.columns]
 output = final[out_cols].sort_values("Avg_Critical_Ratio")
+st.dataframe(output)
 
 # Save
 #output.to_excel("region_performance_summary.xlsx", index=False)
