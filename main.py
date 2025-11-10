@@ -412,7 +412,7 @@ st.dataframe(
 # st.plotly_chart(fig, use_container_width=True)
 
 st.divider()
-st.header("🏅 4. Ranking as per Consistency")
+st.header("📈 4. Ranking as per Consistency")
 
 
 
@@ -436,6 +436,47 @@ agg = agg.merge(dir_cons, on="Dlv_Region", how="left")
 
 # Composite consistency (weights)
 agg["Composite_Consistency"] = 0.6 * agg["Stat_Consistency"].fillna(0) + 0.4 * agg["Dir_Consistency"].fillna(0)
+
+gg["Rank"] = agg["Composite_Consistency"].rank(ascending=False, method='dense').astype(int)
+agg = agg.sort_values("Composite_Consistency", ascending=False)
+
+# --- Streamlit layout ---
+#st.set_page_config(layout="wide")
+#st.title(" Region Ranking by Composite Consistency")
+
+st.markdown("""
+**Composite Consistency** reflects how reliably a region performs across days -
+it blends *statistical stability (60% weight)* and *directional improvement consistency (40% weight)*.
+""")
+
+# --- Styled dataframe ---
+st.dataframe(
+    agg[['Rank', 'Dlv_Region', 'Stat_Consistency', 'Dir_Consistency', 'Composite_Consistency']]
+        .style.format({'Stat_Consistency': '{:.3f}', 'Dir_Consistency': '{:.3f}', 'Composite_Consistency': '{:.3f}'}),
+    column_config={
+        "Stat_Consistency": st.column_config.NumberColumn("Statistical Consistency", format="%.3f"),
+        "Dir_Consistency": st.column_config.NumberColumn("Directional Consistency", format="%.3f"),
+        "Composite_Consistency": st.column_config.NumberColumn("Composite Consistency (Weighted 0.6/0.4)", format="%.3f"),
+        "Rank": st.column_config.NumberColumn("Final Rank", format="%d"),
+    },
+    hide_index=True,
+    use_container_width=True,
+)
+
+# --- Bar chart ---
+fig = px.bar(
+    agg,
+    x="Dlv_Region",
+    y="Composite_Consistency",
+    color="Composite_Consistency",
+    color_continuous_scale="RdYlGn",
+    text="Rank",
+    title="🏅 Composite Consistency by Region (Higher = More Reliable)",
+)
+
+fig.update_traces(textposition='outside')
+fig.update_layout(xaxis_title="Region", yaxis_title="Composite Consistency", coloraxis_showscale=False)
+st.plotly_chart(fig, use_container_width=True)
 
 st.dataframe(agg)
 
