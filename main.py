@@ -537,29 +537,58 @@ st.header("📈 5. Categorization of Regions Based on Performance & Consistency"
 
 # Categorization
 q25 = agg["Avg_Critical_Ratio"].quantile(0.25)
+# def categorize(row):
+#     if pd.isna(row["Avg_Critical_Ratio"]):
+#         return "NoData"
+#     if row["Avg_Critical_Ratio"] < q25 and row["Composite_Consistency"] > 0.7:
+#         return "A: Stable Performer"
+#     elif row["Composite_Consistency"] > 0.6:
+#         return "B: Improving"
+#     elif row["Avg_Critical_Ratio"] < q25:
+#         return "C: Volatile"
+#     else:
+#         return "D: Underperformer"
+# # Calculate 25th percentile of Avg_Critical_Ratio
+# q25 = agg["Avg_Critical_Ratio"].quantile(0.25)
+
 def categorize(row):
-    if pd.isna(row["Avg_Critical_Ratio"]):
+    ratio = row["Avg_Critical_Ratio"]
+    consistency = row["Composite_Consistency"]
+
+    # Handle missing data
+    if pd.isna(ratio) or pd.isna(consistency):
         return "NoData"
-    if row["Avg_Critical_Ratio"] < q25 and row["Composite_Consistency"] > 0.7:
+
+    # A: Low ratio (good) + high consistency (very reliable)
+    if ratio < q25 and consistency >= 0.7:
         return "A: Stable Performer"
-    elif row["Composite_Consistency"] > 0.6:
+
+    # B: Decent consistency (improving), even if ratio not the lowest
+    elif consistency >= 0.6:
         return "B: Improving"
-    elif row["Avg_Critical_Ratio"] < q25:
+
+    # C: Low ratio but poor consistency (unstable performer)
+    elif ratio < q25 and consistency < 0.6:
         return "C: Volatile"
+
+    # D: Weak both in ratio and consistency
     else:
         return "D: Underperformer"
 
+# Apply categorization
 final["Category"] = final.apply(categorize, axis=1)
+
+
 
 st.markdown(f"""
 **Categorization Logic**
 
 | Category | Criteria | Description |
 |-----------|-----------|-------------|
-| **A: Stable Performer** | `Avg_Critical_Ratio < {q25:.3f}` & `Composite_Consistency > 0.7` | Excellent and consistent |
-| **B: Improving** | `Composite_Consistency > 0.6` | Showing improvement trend |
-| **C: Volatile** | `Avg_Critical_Ratio < {q25:.3f}` | Strong but unstable |
-| **D: Underperformer** | Otherwise | Needs improvement |
+| **A: Stable Performer** | `Avg_Critical_Ratio < {q25:.3f}` & `Composite_Consistency > 0.7` | Low REDD Pendency and very consistent |
+| **B: Improving** | `Composite_Consistency > 0.6` | Moderately consistent, improving trend |
+| **C: Volatile** | `Avg_Critical_Ratio < {q25:.3f}` | Sometimes performs well but Not consistent |
+| **D: Underperformer** | Otherwise | Weak on both metrics (Pendency & Consistency) |
 """)
 
 # --- Color mapping ---
