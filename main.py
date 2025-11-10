@@ -749,16 +749,16 @@ output["Target_Critical_Ratio (%)"] = output["Target_Critical_Ratio"] * 100
 # Display DataFrame formatted
 st.markdown("### 📊 Critical Ratio Reduction Summary")
 output = output.rename(columns={
-    "Avg_Critical_Ratio": "Current REDD today to before Contribution",
-    "Target_Critical_Ratio": "Targeted REDD today to before Contribution"
+    "Avg_Critical_Ratio": "Current REDD today and before Contribution",
+    "Target_Critical_Ratio": "Targeted REDD today and before Contribution"
 })
 
 # Convert to %
-output["Current REDD today to before Contribution (%)"] = (
-    output["Current REDD today to before Contribution"] * 100
+output["Current REDD today and before Contribution (%)"] = (
+    output["Current REDD today and before Contribution"] * 100
 )
-output["Targeted REDD today to before Contribution (%)"] = (
-    output["Targeted REDD today to before Contribution"] * 100
+output["Targeted REDD today and before Contribution (%)"] = (
+    output["Targeted REDD today and before Contribution"] * 100
 )
 
 # Display formatted dataframe
@@ -766,8 +766,8 @@ st.markdown("### 📊 REDD Contribution Summary by Region")
 st.dataframe(
     output[[
         "Dlv_Region",
-        "Current REDD today to before Contribution (%)",
-        "Targeted REDD today to before Contribution (%)"
+        "Current REDD today and before Contribution (%)",
+        "Targeted REDD today and before Contribution (%)"
     ]].style.format({
         "Current REDD today and before Contribution (%)": "{:.1f}%",
         "Targeted REDD today and before Contribution (%)": "{:.1f}%"
@@ -781,8 +781,8 @@ fig = px.bar(
     output.melt(
         id_vars="Dlv_Region",
         value_vars=[
-            "Current REDD today to before Contribution (%)",
-            "Targeted REDD today to before Contribution (%)"
+            "Current REDD today and before Contribution (%)",
+            "Targeted REDD today and before Contribution (%)"
         ],
         var_name="Metric",
         value_name="Value"
@@ -796,7 +796,7 @@ fig = px.bar(
 )
 
 fig.update_layout(
-    title="Current vs Targeted REDD 'Today to Before' Contribution by Region",
+    title="Current vs Targeted REDD Today and Before Pendency Contribution by Region",
     yaxis_title="Contribution (%)",
     xaxis_title="Delivery Region",
     template="plotly_white",
