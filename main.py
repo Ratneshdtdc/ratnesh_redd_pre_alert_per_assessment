@@ -411,10 +411,13 @@ st.dataframe(
 
 # st.plotly_chart(fig, use_container_width=True)
 
+st.divider()
+st.header("🏅 4. Ranking as per Consistency")
 
-st.dataframe(agg)
+
 
 agg["Stat_Consistency"] = 1 - (agg["Std_Critical_Ratio"] / agg["Mean_Critical_Cratio"] ) if "Mean_Critical_Cratio" in agg.columns else 1 - (agg["Std_Critical_Ratio"] / agg["Mean_Critical_Ratio"])
+
 
 # Directional consistency: percent of days with improving Critical_Ratio vs previous day for each region
 def directional_consistency(subdf):
@@ -433,6 +436,8 @@ agg = agg.merge(dir_cons, on="Dlv_Region", how="left")
 
 # Composite consistency (weights)
 agg["Composite_Consistency"] = 0.6 * agg["Stat_Consistency"].fillna(0) + 0.4 * agg["Dir_Consistency"].fillna(0)
+
+st.dataframe(agg)
 
 data['Future__gt_7_days'] =  data['Future__gt_7_days'].astype(float)
 
