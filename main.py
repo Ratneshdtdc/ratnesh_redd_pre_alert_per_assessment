@@ -564,7 +564,7 @@ def categorize(row):
         return "A: Stable Performer"
 
     # B: Decent consistency (improving), even if ratio not the lowest
-    elif consistency >= 0.6:
+    elif consistency >= 0.65:
         return "B: Improving"
 
     # C: Low ratio but poor consistency (unstable performer)
