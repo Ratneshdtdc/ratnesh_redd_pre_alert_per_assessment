@@ -769,8 +769,8 @@ st.dataframe(
         "Current REDD today to before Contribution (%)",
         "Targeted REDD today to before Contribution (%)"
     ]].style.format({
-        "Current REDD today to before Contribution (%)": "{:.1f}%",
-        "Targeted REDD today to before Contribution (%)": "{:.1f}%"
+        "Current REDD today and before Contribution (%)": "{:.1f}%",
+        "Targeted REDD today and before Contribution (%)": "{:.1f}%"
     }),
     use_container_width=True,
     hide_index=True
