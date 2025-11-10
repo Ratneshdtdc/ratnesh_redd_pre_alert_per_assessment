@@ -277,7 +277,7 @@ regions = ["All"] + sorted(data["Dlv_Region"].dropna().unique().tolist())
 
 col1, col2 = st.columns(2)
 #selected_zone = col1.selectbox("Select Zone", zones)
-selected_region = col2.selectbox("Select Region", regions)
+selected_region = col1.selectbox("Select Region", regions)
 
 filtered_df = data.copy()
 # if selected_zone != "All":
@@ -302,9 +302,9 @@ with c1:
         y="Critical_Pending",
         color="Dlv_Region",
         markers=True,
-        title="📦 Critical Pending Volume Trend",
+        title="📦 Pending Vol: REDD Today or earlier Trend",
     )
-    fig_pending.update_layout(xaxis_title="", yaxis_title="Critical Pending Volume")
+    fig_pending.update_layout(xaxis_title="", yaxis_title="Pending Vol: REDD Today or earlier")
     st.plotly_chart(fig_pending, use_container_width=True)
 
 with c2:
@@ -314,9 +314,9 @@ with c2:
         y="Critical_Ratio",
         color="Dlv_Region",
         markers=True,
-        title="⚠️ Critical Ratio Trend",
+        title="⚠️ REDD Today or earlier/Total Pending Ratio",
     )
-    fig_ratio.update_layout(xaxis_title="", yaxis_title="Critical Ratio")
+    fig_ratio.update_layout(xaxis_title="", yaxis_title="REDD Today or earlier/Total Pending Ratio")
     st.plotly_chart(fig_ratio, use_container_width=True)
 
 
