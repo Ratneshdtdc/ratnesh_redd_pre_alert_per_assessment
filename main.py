@@ -228,7 +228,7 @@ data = raw.copy()
 st.set_page_config(layout="wide")
 st.title("Reached at Dest REDD Based Open Volume | Analysis & Targets")
 st.divider()
-st.header("📊 1. Pending Volume Analysis")
+st.header("📊 1. REDD wise Pending Volume Trend")
 
 st.write("Consists Data from 1st Nov to 10th Nov (Except 4th Nov).")
 # Define pending bands
@@ -319,8 +319,34 @@ with c2:
     fig_ratio.update_layout(xaxis_title="", yaxis_title="REDD Today or earlier/Total Pending Ratio")
     st.plotly_chart(fig_ratio, use_container_width=True)
 
+st.divider()
+st.header("📊 2. Ranks of Regions")
 
-st.write("Regions Ranks:")
+# --- Optional zone filter ---
+#zones = ["All"] + sorted(data["Dlv_Zone"].dropna().unique().tolist())
+#selected_zone = st.selectbox("Select Zone", zones)
+
+#filtered_df = data.copy()
+#if selected_zone != "All":
+#    filtered_df = filtered_df[filtered_df["Dlv_Zone"] == selected_zone]
+
+# --- Plot line chart for daily ranks ---
+fig = px.line(
+    filtered_df,
+    x="Date",
+    y="Daily_Rank",
+    color="Dlv_Region",
+    markers=True,
+    title="📅 Daily Rank Trend",
+)
+
+# --- Invert y-axis because Rank 1 is top ---
+fig.update_yaxes(autorange="reversed", title="Daily Rank")
+fig.update_layout(xaxis_title="", legend_title_text="Region")
+
+st.plotly_chart(fig, use_container_width=True)
+
+#st.write("Regions Ranks:")
 st.dataframe(
     data
 )
