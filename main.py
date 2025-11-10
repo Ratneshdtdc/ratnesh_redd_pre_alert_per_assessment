@@ -739,11 +739,7 @@ col2.metric("Targeted REDD Today or earlier Ratio", int(final['Target_Critical_P
 #st.dataframe(final)
 
 # Reorder cols sensibly for output
-out_cols = [
-    "Dlv_Region", "Category", "Avg_Critical_Ratio", "Avg_Rank",
-    "Composite_Consistency", "Critical_Pending", "Upcoming_Pending", "Total_Pending",
-    "Target_Critical_Pending", "Target_Critical_Ratio"
-]
+out_cols = ["Dlv_Region", "Category", "Avg_Critical_Ratio", "Target_Critical_Ratio"]
 # ensure columns exist
 out_cols = [c for c in out_cols if c in final.columns]
 output = final[out_cols].sort_values("Avg_Critical_Ratio")
