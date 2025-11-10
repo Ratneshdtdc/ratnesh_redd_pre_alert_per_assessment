@@ -682,6 +682,8 @@ def assign_tier(x):
 region_avg["Performance_Tier"] = region_avg["Critical_Ratio"].apply(assign_tier)
 
 # --- Step 3: Assign dynamic reduction rates ---
+
+
 reduction_map = {"Top": 0.95, "Average": 0.90, "Poor": 0.95}
 region_avg["Reduction_Factor"] = region_avg["Performance_Tier"].map(reduction_map)
 
@@ -701,6 +703,11 @@ region_avg["Target_Critical_Ratio"] = region_avg["Target_Critical_Pending"] / (
 
 # Merge agg with latest targets
 final = agg.merge(region_avg, on="Dlv_Region", how="left")
+
+col1, col2, col3 = st.columns(2)
+col1.metric("Current REDD Today or earlier Ratio", final['Critical_Pending'].sum(),(final['Critical_Pending'].sum()/final['Target_Critical_Pending'].sum())-1 )
+col2.metric("Targeted REDD Today or earlier Ratio", final['Target_Critical_Pending'].sum(), "-")
+
 
 st.dataframe(final)
 
