@@ -360,7 +360,39 @@ agg = data.groupby("Dlv_Region").agg(
 ).reset_index()
 
 st.divider()
-st.header("📊 3. Final Standings of Regions")
+st.header("🏅 3. Final Standings of Regions")
+
+agg['Rank'] = agg['Avg_Critical_Ratio'].rank(ascending=True, method='dense').astype(int)
+agg = agg.sort_values('Avg_Critical_Ratio', ascending=True)
+
+st.dataframe(
+    agg[['Rank', 'Dlv_Region', 'Avg_Critical_Ratio', 'Avg_Rank', 'Std_Critical_Ratio']]
+    .style.format({'Avg_Critical_Ratio': '{:.2f}', 'Avg_Rank': '{:.2f}', 'Std_Critical_Ratio': '{:.2f}'})
+    .highlight_min(subset=['Avg_Critical_Ratio'], color='lightgreen')
+    .highlight_max(subset=['Avg_Critical_Ratio'], color='#ffcccc'),
+    use_container_width=True
+)
+
+fig = px.bar(
+    agg,
+    x='Dlv_Region',
+    y='Avg_Critical_Ratio',
+    color='Avg_Critical_Ratio',
+    color_continuous_scale='RdYlGn_r',
+    text='Rank',
+    title='📊 Overall Standings of Regions',
+)
+fig.update_traces(textposition='outside')
+fig.update_layout(
+    xaxis_title='Region',
+    yaxis_title='Avg Critical Ratio',
+    coloraxis_showscale=False,
+    uniformtext_minsize=8,
+    uniformtext_mode='hide',
+)
+
+st.plotly_chart(fig, use_container_width=True)
+
 
 st.dataframe(agg)
 
