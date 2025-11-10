@@ -6,6 +6,7 @@ import pandas as pd
 import numpy as np
 from io import BytesIO
 import streamlit as st
+import plotly.express as px
 
 # ---------- CONFIG ----------
 file_path = "input data.xlsx"    # change to your file path
@@ -247,6 +248,68 @@ else:
     rank_group = "Date"
 
 data["Daily_Rank"] = data.groupby(rank_group)["Critical_Ratio"].rank(method="dense", ascending=True)
+
+
+
+# --- Sample dataframe (replace this with your actual data) ---
+# data = pd.read_csv('your_file.csv')
+
+# Ensure Date column is properly parsed
+data['Date'] = data['SheetName'].str.extract(r'A0*(\d{2})(\d{2})')[0] + '-' + data['SheetName'].str.extract(r'A0*(\d{2})(\d{2})')[1]
+data['Date'] = pd.to_datetime('2025-' + data['SheetName'].str[3:5] + '-' + data['SheetName'].str[5:7], errors='coerce')
+
+# --- Streamlit layout ---
+st.set_page_config(layout="wide")
+st.title("📊 Critical Pending & Ratio Trend Dashboard")
+
+# --- Filters ---
+zones = ["All"] + sorted(data["Dlv_Zone"].dropna().unique().tolist())
+regions = ["All"] + sorted(data["Dlv_Region"].dropna().unique().tolist())
+
+col1, col2 = st.columns(2)
+selected_zone = col1.selectbox("Select Zone", zones)
+selected_region = col2.selectbox("Select Region", regions)
+
+filtered_df = data.copy()
+if selected_zone != "All":
+    filtered_df = filtered_df[filtered_df["Dlv_Zone"] == selected_zone]
+if selected_region != "All":
+    filtered_df = filtered_df[filtered_df["Dlv_Region"] == selected_region]
+
+# --- Aggregate per Date and Region ---
+trend = (
+    filtered_df.groupby(["Date", "Dlv_Region"], as_index=False)
+    .agg({"Critical_Pending": "sum", "Critical_Ratio": "mean"})
+    .sort_values("Date")
+)
+
+# --- Charts side by side ---
+c1, c2 = st.columns(2)
+
+with c1:
+    fig_pending = px.line(
+        trend,
+        x="Date",
+        y="Critical_Pending",
+        color="Dlv_Region",
+        markers=True,
+        title="📦 Critical Pending Volume Trend",
+    )
+    fig_pending.update_layout(xaxis_title="", yaxis_title="Critical Pending Volume")
+    st.plotly_chart(fig_pending, use_container_width=True)
+
+with c2:
+    fig_ratio = px.line(
+        trend,
+        x="Date",
+        y="Critical_Ratio",
+        color="Dlv_Region",
+        markers=True,
+        title="⚠️ Critical Ratio Trend",
+    )
+    fig_ratio.update_layout(xaxis_title="", yaxis_title="Critical Ratio")
+    st.plotly_chart(fig_ratio, use_container_width=True)
+
 
 st.write("Regions Ranks:")
 st.dataframe(
