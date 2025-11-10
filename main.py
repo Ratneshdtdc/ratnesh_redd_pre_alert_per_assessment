@@ -593,19 +593,26 @@ def categorize(row, q25=q25, cons_high=cons_high, cons_low=cons_low):
 
 # Apply categorization
 final["Category"] = final.apply(categorize, axis=1)
-
+"""
+Quadrants:
+      A: Low ratio (good) & high consistency  -> "A: Stable Performer"
+      B: Low ratio (good) & low/medium consistency -> "B: Good but Unstable"
+      C: High ratio (poor) & high consistency -> "C: Consistent but Poor"
+      D: High ratio (poor) & low/medium consistency -> "D: Underperformer"
+    """
 
 
 st.markdown(f"""
-**Categorization Logic**
+### 🧭 **Categorization Logic**
 
-| Category | Criteria | Description |
-|-----------|-----------|-------------|
-| **A: Stable Performer** | `Avg_Critical_Ratio < {q25:.3f}` & `Composite_Consistency > 0.7` | Low REDD Pendency and very consistent |
-| **B: Improving** | `Composite_Consistency > 0.6` | Moderately consistent, improving trend |
-| **C: Volatile** | `Avg_Critical_Ratio < {q25:.3f}` | Sometimes performs well but Not consistent |
-| **D: Underperformer** | Otherwise | Weak on both metrics (Pendency & Consistency) |
+| **Category** | **Criteria** | **Description** |
+|:--------------|:-------------|:----------------|
+| 🟢 **A: Stable Performer** | `Avg_Critical_Ratio < {q25:.3f}` **and** `Composite_Consistency ≥ 0.70` | Low REDD Pendency with strong consistency — ideal performance zone. |
+| 🟡 **B: Good but Unstable** | `Avg_Critical_Ratio < {q25:.3f}` **and** `Composite_Consistency < 0.70` | Performs well at times but shows volatility — needs stability. |
+| 🔵 **C: Consistent but Poor** | `Avg_Critical_Ratio ≥ {q25:.3f}` **and** `Composite_Consistency ≥ 0.70` | Reliable but with higher pendency — process improvement required. |
+| 🔴 **D: Underperformer** | `Avg_Critical_Ratio ≥ {q25:.3f}` **and** `Composite_Consistency < 0.70` | Weak on both pendency and consistency — needs focused intervention. |
 """)
+
 
 # --- Color mapping ---
 color_map = {
