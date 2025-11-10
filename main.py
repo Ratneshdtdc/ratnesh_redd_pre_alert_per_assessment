@@ -258,16 +258,20 @@ data["Daily_Rank"] = data.groupby(rank_group)["Critical_Ratio"].rank(method="den
 data['Date'] = data['SheetName'].str.extract(r'A0*(\d{2})(\d{2})')[0] + '-' + data['SheetName'].str.extract(r'A0*(\d{2})(\d{2})')[1]
 data['Date'] = pd.to_datetime('2025-' + data['SheetName'].str[3:5] + '-' + data['SheetName'].str[5:7], errors='coerce')
 
+st.dataframe(
+    data['Date']
+)
+
 # --- Streamlit layout ---
 st.set_page_config(layout="wide")
 st.title("📊 Critical Pending & Ratio Trend Dashboard")
 
 # --- Filters ---
-zones = ["All"] + sorted(data["Dlv_Zone"].dropna().unique().tolist())
+#zones = ["All"] + sorted(data["Dlv_Zone"].dropna().unique().tolist())
 regions = ["All"] + sorted(data["Dlv_Region"].dropna().unique().tolist())
 
 col1, col2 = st.columns(2)
-selected_zone = col1.selectbox("Select Zone", zones)
+#selected_zone = col1.selectbox("Select Zone", zones)
 selected_region = col2.selectbox("Select Region", regions)
 
 filtered_df = data.copy()
