@@ -320,7 +320,7 @@ with c2:
     st.plotly_chart(fig_ratio, use_container_width=True)
 
 st.divider()
-st.header("📊 2. Ranks of Regions")
+st.header("📊 2. Daily Trend of Ranks of Regions")
 
 # --- Optional zone filter ---
 # zones = ["All"] + sorted(data["Dlv_Region"].dropna().unique().tolist())
@@ -346,10 +346,9 @@ fig.update_layout(xaxis_title="", legend_title_text="Region")
 
 st.plotly_chart(fig, use_container_width=True)
 
+
 #st.write("Regions Ranks:")
-st.dataframe(
-    data
-)
+
 
 # Aggregate region metrics (stats across provided sheets)
 agg = data.groupby("Dlv_Region").agg(
@@ -359,6 +358,11 @@ agg = data.groupby("Dlv_Region").agg(
     Mean_Critical_Ratio=("Critical_Ratio", "mean"),
     Days=("Date", lambda x: x.nunique() if rank_group == "Date" else x.count())
 ).reset_index()
+
+st.divider()
+st.header("📊 3. Final Standings of Regions")
+
+st.Dataframe(agg)
 
 agg["Stat_Consistency"] = 1 - (agg["Std_Critical_Ratio"] / agg["Mean_Critical_Cratio"] ) if "Mean_Critical_Cratio" in agg.columns else 1 - (agg["Std_Critical_Ratio"] / agg["Mean_Critical_Ratio"])
 
