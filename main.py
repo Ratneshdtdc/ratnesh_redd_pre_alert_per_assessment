@@ -743,7 +743,69 @@ out_cols = ["Dlv_Region", "Category", "Avg_Critical_Ratio", "Target_Critical_Rat
 # ensure columns exist
 out_cols = [c for c in out_cols if c in final.columns]
 output = final[out_cols].sort_values("Avg_Critical_Ratio")
-st.dataframe(output)
+output["Avg_Critical_Ratio (%)"] = output["Avg_Critical_Ratio"] * 100
+output["Target_Critical_Ratio (%)"] = output["Target_Critical_Ratio"] * 100
+
+# Display DataFrame formatted
+st.markdown("### 📊 Critical Ratio Reduction Summary")
+output = output.rename(columns={
+    "Avg_Critical_Ratio": "Current REDD today to before Contribution",
+    "Target_Critical_Ratio": "Targeted REDD today to before Contribution"
+})
+
+# Convert to %
+output["Current REDD today to before Contribution (%)"] = (
+    output["Current REDD today to before Contribution"] * 100
+)
+output["Targeted REDD today to before Contribution (%)"] = (
+    output["Targeted REDD today to before Contribution"] * 100
+)
+
+# Display formatted dataframe
+st.markdown("### 📊 REDD Contribution Summary by Region")
+st.dataframe(
+    output[[
+        "Dlv_Region",
+        "Current REDD today to before Contribution (%)",
+        "Targeted REDD today to before Contribution (%)"
+    ]].style.format({
+        "Current REDD today to before Contribution (%)": "{:.1f}%",
+        "Targeted REDD today to before Contribution (%)": "{:.1f}%"
+    }),
+    use_container_width=True,
+    hide_index=True
+)
+
+# Plotly visualization
+fig = px.bar(
+    output.melt(
+        id_vars="Dlv_Region",
+        value_vars=[
+            "Current REDD today to before Contribution (%)",
+            "Targeted REDD today to before Contribution (%)"
+        ],
+        var_name="Metric",
+        value_name="Value"
+    ),
+    x="Dlv_Region",
+    y="Value",
+    color="Metric",
+    barmode="group",
+    text_auto=".1f",
+    color_discrete_sequence=px.colors.qualitative.Set2
+)
+
+fig.update_layout(
+    title="Current vs Targeted REDD 'Today to Before' Contribution by Region",
+    yaxis_title="Contribution (%)",
+    xaxis_title="Delivery Region",
+    template="plotly_white",
+    title_x=0.5,
+    height=420,
+    legend_title="Metric"
+)
+
+st.plotly_chart(fig, use_container_width=True)
 
 # Save
 #output.to_excel("region_performance_summary.xlsx", index=False)
