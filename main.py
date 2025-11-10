@@ -454,9 +454,9 @@ st.dataframe(
     agg[['Rank', 'Dlv_Region', 'Stat_Consistency', 'Dir_Consistency', 'Composite_Consistency']]
         .style.format({'Stat_Consistency': '{:.3f}', 'Dir_Consistency': '{:.3f}', 'Composite_Consistency': '{:.3f}'}),
     column_config={
-        "Stat_Consistency": st.column_config.NumberColumn("Statistical Consistency", format="%.3f"),
-        "Dir_Consistency": st.column_config.NumberColumn("Directional Consistency", format="%.3f"),
-        "Composite_Consistency": st.column_config.NumberColumn("Composite Consistency (Weighted 0.6/0.4)", format="%.3f"),
+        "Stat_Consistency": st.column_config.NumberColumn("Statistical Consistency Score", format="%.3f"),
+        "Dir_Consistency": st.column_config.NumberColumn("Directional Consistency Score", format="%.3f"),
+        "Composite_Consistency": st.column_config.NumberColumn("Composite Consistency Score (Weighted 0.6/0.4)", format="%.3f"),
         "Rank": st.column_config.NumberColumn("Final Rank", format="%d"),
     },
     hide_index=True,
@@ -471,11 +471,11 @@ fig = px.bar(
     color="Composite_Consistency",
     color_continuous_scale="RdYlGn",
     text="Rank",
-    title="🏅 Composite Consistency by Region (Higher = More Reliable)",
+    title="🏅 Composite Consistency by Region",
 )
 
 fig.update_traces(textposition='outside')
-fig.update_layout(xaxis_title="Region", yaxis_title="Composite Consistency", coloraxis_showscale=False)
+fig.update_layout(xaxis_title="Dlv Region", yaxis_title="Composite Consistency Score", coloraxis_showscale=False)
 st.plotly_chart(fig, use_container_width=True)
 
 st.dataframe(agg)
@@ -548,6 +548,8 @@ def categorize(row):
 
 final["Category"] = final.apply(categorize, axis=1)
 
+st.dataframe(final)
+
 # Reorder cols sensibly for output
 out_cols = [
     "Dlv_Region", "Category", "Avg_Critical_Ratio", "Avg_Rank",
@@ -559,6 +561,6 @@ out_cols = [c for c in out_cols if c in final.columns]
 output = final[out_cols].sort_values("Avg_Critical_Ratio")
 
 # Save
-output.to_excel("region_performance_summary.xlsx", index=False)
-print("✅ Saved region_performance_summary.xlsx")
-print(output.head(50))
+#output.to_excel("region_performance_summary.xlsx", index=False)
+#print("✅ Saved region_performance_summary.xlsx")
+#print(output.head(50))
