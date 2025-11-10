@@ -736,7 +736,7 @@ col1.metric("Current REDD Today or earlier Ratio", int(final['Critical_Pending']
 col2.metric("Targeted REDD Today or earlier Ratio", int(final['Target_Critical_Pending'].sum()),str(round(((final['Target_Critical_Pending'].sum()/final['Critical_Pending'].sum())-1)*100,2))+"%" )
 
 
-st.dataframe(final)
+#st.dataframe(final)
 
 # Reorder cols sensibly for output
 out_cols = [
