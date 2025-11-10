@@ -705,8 +705,8 @@ region_avg["Target_Critical_Ratio"] = region_avg["Target_Critical_Pending"] / (
 final = agg.merge(region_avg, on="Dlv_Region", how="left")
 
 col1, col2 = st.columns(2)
-col1.metric("Current REDD Today or earlier Ratio", final['Critical_Pending'].sum(),(final['Critical_Pending'].sum()/final['Target_Critical_Pending'].sum())-1 )
-col2.metric("Targeted REDD Today or earlier Ratio", final['Target_Critical_Pending'].sum(), "-")
+col1.metric("Current REDD Today or earlier Ratio", int(final['Critical_Pending'].sum()),round((final['Critical_Pending'].sum()/final['Target_Critical_Pending'].sum())-1) )
+col2.metric("Targeted REDD Today or earlier Ratio", int(final['Target_Critical_Pending'].sum()), "-")
 
 
 st.dataframe(final)
