@@ -713,7 +713,7 @@ for (key, val), col in zip(default_map.items(), cols):
 #st.json(reduction_map)
 
 
-reduction_map = {"Top": 0.95, "Average": 0.90, "Poor": 0.95}
+#reduction_map = {"Top": 0.95, "Average": 0.90, "Poor": 0.95}
 region_avg["Reduction_Factor"] = region_avg["Performance_Tier"].map(reduction_map)
 
 region_avg["Target_Older_than_7_days"] = region_avg["Older_than_7_days"] * region_avg["Reduction_Factor"]
