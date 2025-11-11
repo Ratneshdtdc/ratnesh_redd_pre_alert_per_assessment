@@ -558,8 +558,8 @@ q25 = agg["Avg_Critical_Ratio"].quantile(0.25)
 
 # thresholds (tweakable)
 q25 = final["Avg_Critical_Ratio"].quantile(0.25)  # performance threshold (lower = better)
-cons_high = 0.70   # high consistency
-cons_low  = 0.60   # medium consistency cutoff
+cons_high = 0.65   # high consistency
+cons_low  = 0.55   # medium consistency cutoff
 
 def categorize(row, q25=q25, cons_high=cons_high, cons_low=cons_low):
     """
