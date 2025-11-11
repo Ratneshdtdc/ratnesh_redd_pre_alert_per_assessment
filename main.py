@@ -606,10 +606,10 @@ st.markdown(f"""
 
 | **Category** | **Criteria** | **Description** |
 |:--------------|:-------------|:----------------|
-| 🟢 **A: Stable Performer** | `Avg_Critical_Ratio < {q25:.3f}` **and** `Composite_Consistency ≥ 0.70` | Low REDD Pendency with strong consistency — ideal performance zone. |
-| 🟡 **B: Good but Unstable** | `Avg_Critical_Ratio < {q25:.3f}` **and** `Composite_Consistency < 0.70` | Performs well at times but shows volatility — needs stability. |
-| 🔵 **C: Consistent but Poor** | `Avg_Critical_Ratio ≥ {q25:.3f}` **and** `Composite_Consistency ≥ 0.70` | Reliable but with higher pendency — process improvement required. |
-| 🔴 **D: Underperformer** | `Avg_Critical_Ratio ≥ {q25:.3f}` **and** `Composite_Consistency < 0.70` | Weak on both pendency and consistency — needs focused intervention. |
+| 🟢 **A: Stable Performer** | `Avg_Critical_Ratio < {q25:.3f}` **and** `Composite_Consistency ≥ 0.65` | Low REDD Pendency with strong consistency — ideal performance zone. |
+| 🟡 **B: Good but Unstable** | `Avg_Critical_Ratio < {q25:.3f}` **and** `Composite_Consistency < 0.65` | Performs well at times but shows volatility — needs stability. |
+| 🔵 **C: Consistent but Poor** | `Avg_Critical_Ratio ≥ {q25:.3f}` **and** `Composite_Consistency ≥ 0.65` | Reliable but with higher pendency — process improvement required. |
+| 🔴 **D: Underperformer** | `Avg_Critical_Ratio ≥ {q25:.3f}` **and** `Composite_Consistency < 0.65` | Weak on both pendency and consistency — needs focused intervention. |
 """)
 
 
@@ -636,7 +636,7 @@ fig = px.scatter(
 
 # Add quadrant reference lines
 fig.add_vline(x=q25, line_dash="dash", line_color="gray")
-fig.add_hline(y=0.7, line_dash="dot", line_color="gray")
+fig.add_hline(y=0.65, line_dash="dot", line_color="gray")
 #fig.add_hline(y=0.6, line_dash="dot", line_color="gray")
 
 fig.update_traces(textposition="top center")
